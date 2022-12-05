@@ -1,2 +1,2 @@
 # MRICloudPy
-A repo for MRICLoudPy, software for analyzing MRICloud output data
+A repo for MRICloudPy, software for analyzing MRICloud output data
