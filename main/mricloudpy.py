@@ -2,6 +2,7 @@ import pandas as pd
 import read
 import access
 import visuals
+import imaging
 
 class Data:
 
@@ -138,6 +139,9 @@ class Data:
 
     def generate_corr_matrix(self, type: int, level: int, id: list = None):
         return visuals.generate_corr_matrix(self, type, level, id)
+    
+    def generate_3d_image(self, img, regions: list):
+        return imaging.generate_3d_image(self, img, regions)
 
 if __name__ == '__main__':
     print(__name__)
