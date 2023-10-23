@@ -360,6 +360,34 @@ def import_data(self, path: str, id_type: str = 'numeric', id_list: list = None)
         df = pd.concat([df, df2], ignore_index=True)
 
     print(str(self.import_data.__name__) + ": Import successful")
+    return df 
+
+def append_covariate_data(self, file: str, icv: bool = False, tbv: bool = False):
+
+    # Access data from data object
+    df_original = self.long_to_wide()
+
+    # Create dataframe of covariate data
+    df_covariate = pd.read_csv(file)
+    # Rename first column to 'ID' to match data and set as object
+    df_covariate.rename(columns={df_covariate.columns[0]: 'ID'}, inplace=True)
+    df_covariate['ID'] = df_covariate['ID'].astype(str)
+
+    # DATA TESTING (DELETE LINE LATER)
+    df_covariate.loc[:14, 'ID'] = ['Kermit', 'Miss Piggy', 'Fozzie', 'Gonzo',
+                                    'Rowlf', 'Scooter', 'Animal', 'Pepe', 'Rizzo', 'Beaker', 
+                                    'Statler', 'Waldorf', 'Swedish Chef', 'Bob', 'Sally']
+
+    # Merge dataframes along ID column
+    df = pd.merge(df_covariate, df_original, on='ID')
+
+    # Append ICV volumes
+    if icv:
+        icv_cols = [col for col in df_original if col.endswith('_Type1.0_L1.0')]
+        df['ICV'] = df[icv_cols].sum(axis=1)
+    if tbv:
+        tbv_cols = [col for col in df_original if col.endswith('_Type1.0_L1.0') and col != 'CSF_Type1.0_L1.0']
+        df['TBV'] = df[tbv_cols].sum(axis=1)
     return df
 
 if __name__ == '__main__':

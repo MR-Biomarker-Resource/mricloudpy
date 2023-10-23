@@ -53,5 +53,24 @@ def chat(self, key):
     
     return output
 
+# Normalize covariate dataset by ICV, TBV, or ICV + TBV
+def normalize_covariate_data(self, covariate_dataset, normalizing_factor: str):
+
+    df = covariate_dataset.copy()
+    normalized_cols = [col for col in df.columns if '_Type' in col]
+
+    if normalizing_factor == 'icv_tbv':
+        df['icv_tbv'] = df[['ICV', 'TBV']].sum(axis=1).to_frame()
+        df[normalized_cols] = df[normalized_cols].div(df['icv_tbv'], axis=0)
+        df = df.drop(columns=['icv_tbv'])
+
+    if normalizing_factor == 'icv':
+        df[normalized_cols] = df[normalized_cols].div(df['ICV'], axis=0)
+
+    if normalizing_factor == 'tbv':
+        df[normalized_cols] = df[normalized_cols].div(df['TBV'], axis=0)
+
+    return df
+
 if __name__ == '__main__':
     print(__name__)

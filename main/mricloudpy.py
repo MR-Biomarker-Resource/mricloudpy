@@ -2,6 +2,7 @@ import pandas as pd
 import read
 import access
 import visuals
+import analysis
 import imaging
 
 class Data:
@@ -140,8 +141,20 @@ class Data:
     def generate_corr_matrix(self, type: int, level: int, id: list = None):
         return visuals.generate_corr_matrix(self, type, level, id)
     
-    def generate_3d_image(self, img, regions: list):
-        return imaging.generate_3d_image(self, img, regions)
+    def append_covariate_data(self, file: str, icv: bool = False, tbv: bool = False):
+        return read.append_covariate_data(self, file, icv, tbv)
+    
+    def normalize_covariate_data(self, covariate_dataset, normalizing_factor: str):
+        return access.normalize_covariate_data(self, covariate_dataset, normalizing_factor)
+    
+    def OLS(self, covariate_dataset, covariates: list, outcome: str, log: bool = False):
+        return analysis.OLS(self, covariate_dataset, covariates, outcome, log)
+    
+    def Logit(self, covariate_dataset, covariates: list, outcome: str, log: bool = False):
+        return analysis.Logit(self, covariate_dataset, covariates, outcome, log)
+    
+    def RandomForest(self, covariate_dataset, covariates: list, outcome: str):
+        return analysis.RandomForest(self, covariate_dataset, covariates, outcome)
 
 if __name__ == '__main__':
     print(__name__)

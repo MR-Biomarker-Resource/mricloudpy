@@ -1,5 +1,4 @@
 import nibabel as nib
-import plotly_express as px
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
@@ -40,11 +39,6 @@ def remove_skull(slice_intensity: list):
         slice_intensity[i][mask] = 0
     return slice_intensity
 
-# Convert region IDs to region names
-# slice_sagittal = [np.vectorize(lookup.get)(i).T for i in slice_sagittal_intensity]
-# slice_coronal = [np.vectorize(lookup.get)(i).T for i in slice_coronal_intensity]
-# slice_horizontal = [np.vectorize(lookup.get)(i).T for i in slice_horizontal_intensity]
-
 def generate_3d_image(img_path: str, regions: list, view: int, nrows: int, 
                       ncols: int, slice_n: int = 0):
 
@@ -83,20 +77,9 @@ def generate_3d_image(img_path: str, regions: list, view: int, nrows: int,
     regions_id = [i for i,j in lookup_dict.items() if j in regions]
 
     # Filter images for specificed regions
-    # regions_sagittal = np.array([np.where((arr > 0) & (~np.isin(arr, regions_id)), 283, arr) for arr in slice_sagittal_intensity])
-    # regions_coronal = np.array([np.where((arr > 0) & (~np.isin(arr, regions_id)), 283, arr) for arr in slice_coronal_intensity])
-    # regions_horizontal = np.array([np.where((arr > 0) & (~np.isin(arr, regions_id)), 283, arr) for arr in slice_horizontal_intensity])
     regions_sagittal = np.array([np.where(np.isin(arr, regions_id), arr, 0) for arr in slice_sagittal_intensity])
     regions_coronal = np.array([np.where(np.isin(arr, regions_id), arr, 0) for arr in slice_coronal_intensity])
     regions_horizontal = np.array([np.where(np.isin(arr, regions_id), arr, 0) for arr in slice_horizontal_intensity])
-
-    # Generate figure for each view
-    # fig_sagittal = px.imshow(regions_sagittal.T, animation_frame=2, origin='lower', 
-    #                         color_continuous_scale=COLOR_SCALE, title=SAGITTAL_TITLE, color_continuous_midpoint=140)
-    # fig_coronal = px.imshow(regions_coronal.T, animation_frame=2, origin='lower', 
-    #                         color_continuous_scale=COLOR_SCALE, title=CORONAL_TITLE, color_continuous_midpoint=140)
-    # fig_horizontal = px.imshow(regions_horizontal.T, animation_frame=2, origin='lower', 
-    #                         color_continuous_scale=COLOR_SCALE, title=HORIZONTAL_TITLE, color_continuous_midpoint=140)
     
     # Slice-by-slice plot
     if nrows == 1 or ncols == 1:
@@ -187,10 +170,6 @@ def generate_3d_image(img_path: str, regions: list, view: int, nrows: int,
                 result[0] = 0
             cumsum_result = [sum(result[:i]) for i in range(len(result))]
 
-            print(cumsum_result)
-            print(img_data.shape)
-            print(current_total_index)
-
             #Check view selection and draw image data
             if view == 0: # Horizontal/axial
                 # Resize template to fit image data
@@ -262,28 +241,8 @@ def generate_3d_image(img_path: str, regions: list, view: int, nrows: int,
     fig.update_xaxes(visible=False, showticklabels=False, scaleanchor='y')
     fig.update_yaxes(visible=False, showticklabels=False, scaleanchor='x')
 
-    # fig_sagittal = px.imshow(regions_sagittal[:,:,0].T, origin='lower', 
-    #                         color_continuous_scale=COLOR_SCALE, title=SAGITTAL_TITLE, color_continuous_midpoint=140)
-    # fig_coronal = px.imshow(regions_coronal[:,:,0].T, origin='lower', 
-    #                         color_continuous_scale=COLOR_SCALE, title=CORONAL_TITLE, color_continuous_midpoint=140)
-    # fig_horizontal = px.imshow(regions_horizontal[:,:,0].T, origin='lower', 
-    #                         color_continuous_scale=COLOR_SCALE, title=HORIZONTAL_TITLE, color_continuous_midpoint=140)
-    # figs = [fig_sagittal, fig_coronal, fig_horizontal]
-
-    # Remove axes from figures and change animation_frame label
-    # for i in figs:
-    #     i.update_xaxes(visible=False)
-    #     i.update_yaxes(visible=False)
-    #     i.update_coloraxes(showscale=False)
-    #     i.update_layout(sliders=[{"currentvalue": {"prefix": "Slice: "}}])
-
-    # fig_sagittal.show()
-    # fig_coronal.show()
-    # fig_horizontal.show()
-
     fig.show()
     return fig
 
 if __name__ == '__main__':
-    # generate_3d_image(IMG_PATH, ['CSF'], 0, 1, 1)
     print(__name__)
