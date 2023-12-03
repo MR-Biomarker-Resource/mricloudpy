@@ -198,7 +198,7 @@ append_covariate_data(file, icv=False, tbv=False)
 
 ### normalize_covariate_data
 
-Normalize covariate data in data object by ICV, TBV, or ICV + TBV.
+Normalize region data in covariate dataset by ICV, TBV, or ICV + TBV.
 
 ```python
 normalize_covariate_data(covariate_dataset, normalizing_factor)
