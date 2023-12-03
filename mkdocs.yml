@@ -1,0 +1,8 @@
+site_name: MRICloudPy
+nav:
+    - Home: index.md
+    - Getting Started: getting_started.md
+    - User Guide: user_guide.md
+    - Methods: methods.md
+    - About: about.md
+theme: readthedocs

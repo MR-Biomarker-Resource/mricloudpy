@@ -3,4 +3,4 @@ cache
 __pycache__
 template
 mni_template_data/*
-!mni_template_data/mni_icbm152_t1_tal_nlin_sym_09c.nii
+!mni_template_data/JHU_MNI_SS_T1.nii.gz

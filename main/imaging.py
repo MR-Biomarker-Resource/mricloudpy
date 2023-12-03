@@ -16,7 +16,8 @@ LEVEL_COLUMNS = ['Type1-L5 Statistics', 'Type1-L4 Statistics',
 IMG_PATH = 'template\JHU_MNI_SS_T1_283Labels_M2.img'
 HDR_PATH = 'template\JHU_MNI_SS_T1_283Labels_M2.hdr'
 
-TEMPLATE_PATH = 'mni_template_data\mni_icbm152_t1_tal_nlin_sym_09c.nii'
+TEMPLATE_PATH = 'mni_template_data\JHU_MNI_SS_T1.nii.gz'
+# TEMPLATE_PATH = 'mni_template_data\mni_icbm152_t1_tal_nlin_sym_09c.nii'
 
 def imaging_read_lookup(col):
     df = pd.read_csv(LEVEL_FILE, sep='\t', skiprows=1, index_col=False, 

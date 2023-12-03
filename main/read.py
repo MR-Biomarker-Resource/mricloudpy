@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 # Retrieves list of text files from directory
-def get_files(self, path):
+def _get_files(self, path):
     file_list = os.listdir(path)
     file_list = [x for x in file_list if x.endswith('.txt')]
 
@@ -13,7 +13,7 @@ def get_files(self, path):
     return file_list
 
 # Retrieve, clean-up, and return header from data file
-def get_header(self, f):
+def _get_header(self, f):
     file = open(f)
     content = file.readlines()
     header_line = content.index('Image\tObject\tVolume_mm3\tMin\tMax\tMean\tStd\t\n')
@@ -24,7 +24,7 @@ def get_header(self, f):
     return head
 
 # Retrieve first index/line of data
-def get_start_index(self, f):
+def _get_start_index(self, f):
     file = open(f)
     content = file.readlines()
     start_index = content.index('Type1-L1 Statistics\n')
@@ -32,22 +32,22 @@ def get_start_index(self, f):
     return start_index
 
 # Workaround to import first level label
-def type1_l1_exception(self, f, df):
-    row = pd.DataFrame(columns=self.get_header(f))
+def _type1_l1_exception(self, f, df):
+    row = pd.DataFrame(columns=self._get_header(f))
     row.at[0, 'Image'] = "Type1-L1 Statistics"
     new = pd.concat([row, df])
 
     return new
 
 # Read level lookup table into dataframe
-def read_lookup_table(self, col):
+def _read_lookup_table(self, col):
     df = pd.read_csv(self.LEVEL_FILE, sep='\t', skiprows=1, index_col=False, 
         header=None, usecols=range(1, 11), names=col)
 
     return df
 
 # Assign type label according to index
-def get_type(self, i):
+def _get_type(self, i):
     if 0 < i < 9:
         return 1
     elif 9 < i < 29:
@@ -70,7 +70,7 @@ def get_type(self, i):
         return 2
 
 # Assign level label according to index
-def get_level(self, i):
+def _get_level(self, i):
     if 0 < i < 9:
         return 1
     elif 9 < i < 29:
@@ -93,7 +93,7 @@ def get_level(self, i):
         return 5
 
 # Reference lookup table and append objects for levels 1-5 for both type 1 and type 2
-def level5_lookup(self, df, dfl):
+def _level5_lookup(self, df, dfl):
     # Iterate over data
     for i, r1 in df.iterrows():
         # Check for type and level
@@ -124,7 +124,7 @@ def level5_lookup(self, df, dfl):
                         df.loc[i, 'Level1'] = r2['Type2-L1 Statistics']
 
 # Reference lookup table and append objects for levels 1-5 for both type 1 and type 2
-def level4_lookup(self, df, dfl):
+def _level4_lookup(self, df, dfl):
     # Iterate over data
     for i, r1 in df.iterrows():
         # Check for type and level
@@ -153,7 +153,7 @@ def level4_lookup(self, df, dfl):
                         df.loc[i, 'Level1'] = r2['Type2-L1 Statistics']
 
 # Reference lookup table and append objects for levels 1-5 for both type 1 and type 2
-def level3_lookup(self, df, dfl):
+def _level3_lookup(self, df, dfl):
     # Iterate over data
     for i, r1 in df.iterrows():
         # Check for type and level
@@ -180,7 +180,7 @@ def level3_lookup(self, df, dfl):
                         df.loc[i, 'Level1'] = r2['Type2-L1 Statistics']
 
 # Reference lookup table and append objects for levels 1-5 for both type 1 and type 2
-def level2_lookup(self, df, dfl):
+def _level2_lookup(self, df, dfl):
     # Iterate over data
     for i, r1 in df.iterrows():
         # Check for type and level
@@ -205,7 +205,7 @@ def level2_lookup(self, df, dfl):
                         df.loc[i, 'Level1'] = r2['Type2-L1 Statistics']
 
 # Reference lookup table and append objects for levels 1-5 for both type 1 and type 2
-def level1_lookup(self, df):
+def _level1_lookup(self, df):
     # Iterate over data
     for i, r1 in df.iterrows():
         # Check for type and level
@@ -220,7 +220,7 @@ def level1_lookup(self, df):
                 df.loc[i, 'Level1'] = df.loc[i, 'Object']
 
 # Append base region and hemisphere columns
-def append_region_cols(self, df: pd.DataFrame):
+def _append_region_cols(self, df: pd.DataFrame):
     # Iterate over dataframe
     for i, row in df.iterrows():
         # Parse object and populate based on relevant region and hemisphere
@@ -240,63 +240,63 @@ def append_region_cols(self, df: pd.DataFrame):
     return
 
 # Appends hierarchical level 1-5 and ICV columns
-def append_hierarchy_cols(self, df: pd.DataFrame, base_level: int):
+def _append_hierarchy_cols(self, df: pd.DataFrame, base_level: int):
     # Populate necessary columns based on base level
     if (base_level == 5):
-        self.level5_lookup(df, self.read_lookup_table(self.LEVEL_COLUMNS))
-        self.level4_lookup(df, self.read_lookup_table(self.LEVEL_COLUMNS))
-        self.level3_lookup(df, self.read_lookup_table(self.LEVEL_COLUMNS))
-        self.level2_lookup(df, self.read_lookup_table(self.LEVEL_COLUMNS))
-        self.level1_lookup(df)
+        self._level5_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
+        self._level4_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
+        self._level3_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
+        self._level2_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
+        self._level1_lookup(df)
         df['ICV'] = "ICV"
     elif (base_level == 4):
-        self.level4_lookup(df, self.read_lookup_table(self.LEVEL_COLUMNS))
-        self.level3_lookup(df, self.read_lookup_table(self.LEVEL_COLUMNS))
-        self.level2_lookup(df, self.read_lookup_table(self.LEVEL_COLUMNS))
-        self.level1_lookup(df)
+        self._level4_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
+        self._level3_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
+        self._level2_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
+        self._level1_lookup(df)
         df['ICV'] = "ICV"
         return
     elif (base_level == 3):
-        self.level3_lookup(df, self.read_lookup_table(self.LEVEL_COLUMNS))
-        self.level2_lookup(df, self.read_lookup_table(self.LEVEL_COLUMNS))
-        self.level1_lookup(df)
+        self._level3_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
+        self._level2_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
+        self._level1_lookup(df)
         df['ICV'] = "ICV"
         return
     elif (base_level == 2):
-        self.level2_lookup(df, self.read_lookup_table(self.LEVEL_COLUMNS))
-        self.level1_lookup(df)
+        self._level2_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
+        self._level1_lookup(df)
         df['ICV'] = "ICV"
         return
     elif (base_level == 1):
-        self.level1_lookup(df)
+        self._level1_lookup(df)
         df['ICV'] = "ICV"
         return
     else:
         # Invalid base level error
-        print(str(self.append_hierarchy_cols.__name__) + ": Invalid base_level: " 
+        print(str(self._append_hierarchy_cols.__name__) + ": Invalid base_level: " 
                 + "\'" + str(base_level) + "\'" + ", valid base_level(s) include: 1-5")
         return
 
     return df
 
 # Import and read data file into dataframe
-def read_file(self, file: str): 
+def _read_file(self, file: str): 
     # Read text file and store in dataframe
-    df = pd.read_csv(file, sep='\t', skiprows=self.get_start_index(file)+1, 
-        index_col=False, header=None, names=self.get_header(file))
+    df = pd.read_csv(file, sep='\t', skiprows=self._get_start_index(file)+1, 
+        index_col=False, header=None, names=self._get_header(file))
     df.index += 1 # Shifts index up by 1 to make room for first level label
 
     # Removes level labels from dataframe
     df = df[df['Image'].str.contains('Type')==False]
 
     # Appends 'Type' column
-    df['Type'] = df.index.map(self.get_type)
+    df['Type'] = df.index.map(self._get_type)
 
     # Appends 'Level' column
-    df['Level'] = df.index.map(self.get_level)
+    df['Level'] = df.index.map(self._get_level)
 
     # Appends region and hemisphere detail columns
-    self.append_region_cols(df)
+    self._append_region_cols(df)
 
     # Appends 'Prop' column
     tot_vol = df.loc[1:8, 'Volume_mm3'].sum()
@@ -312,15 +312,15 @@ def read_file(self, file: str):
     return df
 
 # Returns dataframe of type/level labels with preserved indices
-def get_type_labels(self, file):
+def _get_type_labels(self, file):
     # Read text file and store in dataframe
-    df = pd.read_csv(file, sep='\t', skiprows=self.get_start_index(file)+1, 
+    df = pd.read_csv(file, sep='\t', skiprows=self._get_start_index(file)+1, 
         index_col=False, header=None, names=self.get_header(file))
     df.index += 1 # Shifts index up by 1 to make room for first level label
     
     # Isolates level labels with preserved indices, adds first level label
     df = df[df['Image'].str.match('Type')]
-    df = self.type1_l1_exception(file, df)
+    df = self._type1_l1_exception(file, df)
 
     # Rename column to more suitable 'Labels'
     df = df['Image'].rename('Labels')
@@ -329,7 +329,7 @@ def get_type_labels(self, file):
 
 # Combines dataframes from a list of files
 def import_data(self, path: str, id_type: str = 'numeric', id_list: list = None):
-    files = self.get_files(path)
+    files = self._get_files(path)
     files_found = files.copy()
     files_found = [x.replace(path + '/', '') for x in files_found]
     print(str(self.import_data.__name__) + ": Data files found")
@@ -341,7 +341,7 @@ def import_data(self, path: str, id_type: str = 'numeric', id_list: list = None)
     df = pd.DataFrame()
     # Iterate over list of files, read in files, and concatenate into a dataframe
     for f in files:
-        df2 = self.read_file(f)
+        df2 = self._read_file(f)
         # Populate ID column based on id_type (custom, filename, numeric)
         if (id_type == 'custom'):
             if (id_list is None):

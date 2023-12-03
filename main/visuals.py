@@ -2,7 +2,7 @@ import pandas as pd
 import plotly_express as px
 
 # Get hiearchy path for 'part-of-whole' figure function according to base level
-def get_hierarchy_path(self, base_level):
+def _get_hierarchy_path(self, base_level):
     if (base_level == 5):
         path = ['ICV', 'Level1', 'Level2', 'Level3', 'Level4', 'Level5']
     elif (base_level == 4):
@@ -44,9 +44,9 @@ def generate_sunburst(self, type: int, id: str, base_level: str = 5):
     # and drop NaN/level columns rows for square data
     df_type = self.df[self.df['Type'] == type]
     df_type = df_type[df_type['ID'] == id]
-    path = self.get_hierarchy_path(base_level)
+    path = self._get_hierarchy_path(base_level)
     # Append hierarchy columns for sunburst
-    self.append_hierarchy_cols(df_type, base_level=base_level)
+    self._append_hierarchy_cols(df_type, base_level=base_level)
     # df_type1 = drop_sunburst_col(df_type1, base_level)
     df_type = df_type.dropna()
 
@@ -85,9 +85,9 @@ def generate_treemap(self, type: int, id: str, base_level: str = 5):
     # and drop NaN/level columns rows for square data
     df_type = self.df[self.df['Type'] == type]
     df_type = df_type[df_type['ID'] == id]
-    path = self.get_hierarchy_path(base_level)
+    path = self._get_hierarchy_path(base_level)
     # Append hierarchy columns for sunburst
-    self.append_hierarchy_cols(df_type, base_level=base_level)
+    self._append_hierarchy_cols(df_type, base_level=base_level)
     # df_type1 = drop_sunburst_col(df_type1, base_level)
     df_type = df_type.dropna()
 
@@ -126,9 +126,9 @@ def generate_icicle(self, type: int, id: str, base_level: str = 5):
     # and drop NaN/level columns rows for square data
     df_type = self.df[self.df['Type'] == type]
     df_type = df_type[df_type['ID'] == id]
-    path = self.get_hierarchy_path(base_level)
+    path = self._get_hierarchy_path(base_level)
     # Append hierarchy columns for sunburst
-    self.append_hierarchy_cols(df_type, base_level=base_level)
+    self._append_hierarchy_cols(df_type, base_level=base_level)
     # df_type1 = drop_sunburst_col(df_type1, base_level)
     df_type = df_type.dropna()
 
@@ -185,7 +185,7 @@ def generate_bar(self, type: int, level: int, id: list = None,
     figlevel.show()
     return figlevel
     
-def get_mean_diff(self, df):
+def _get_mean_diff(self, df):
 
     df_left = df[df['Hemisphere'] == 'Left']
     df_right = df[df['Hemisphere'] == 'Right']
@@ -250,7 +250,7 @@ def generate_mean_diff(self, type: int, level: int, color: str = 'ID', id: list 
         
     # Filter level and generate Plotly scatter plot
     df_typelevel = df_type[df_type['Level'] == level]
-    figlevel = px.scatter(self.get_mean_diff(df_typelevel), x='Mean', y='Difference', 
+    figlevel = px.scatter(self._get_mean_diff(df_typelevel), x='Mean', y='Difference', 
         color=color, title=TITLE, hover_data=['Object'], labels={'Mean':'Mean (mm\u00b3)', 
         'Difference':'Difference (mm\u00b3)'})
     figlevel.update_traces(marker={'size': point_size})
@@ -260,7 +260,7 @@ def generate_mean_diff(self, type: int, level: int, color: str = 'ID', id: list 
     return figlevel
 
 # Transform dataframe for correlation matrix
-def corr_transform(self, df):
+def _corr_transform(self, df):
 
     df = df.copy()
     # Filter and pivot dataframe from long to wide
@@ -308,7 +308,7 @@ def generate_corr_matrix(self, type: int, level: int, id: list = None):
     # Filter level and generate Plotly heatmap
     df_typelevel = df_type[df_type['Level'] == level]
 
-    df_typelevel_corr = self.corr_transform(df_typelevel)
+    df_typelevel_corr = self._corr_transform(df_typelevel)
     figlevel = px.imshow(df_typelevel_corr, title=TITLE)
     figlevel.update_xaxes(autorange='reversed')
 
