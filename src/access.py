@@ -1,6 +1,6 @@
 import pandas as pd
-from pandasai import PandasAI
-from pandasai.llm.openai import OpenAI
+# from pandasai import PandasAI
+# from pandasai.llm.openai import OpenAI
 
 # Renames specific subject ID
 def rename_subject(self, old: str, new: str):
@@ -46,12 +46,12 @@ def long_to_wide(self):
     print(str(self.long_to_wide.__name__) + ": Conversion successful")
     return df_wide
 
-def chat(self, key):
-    llm = OpenAI(api_token=key)
-    prompt = input(str(chat.__name__) + ': ')
-    output = PandasAI(llm).run(self.df, prompt)
+# def chat(self, key):
+#     llm = OpenAI(api_token=key)
+#     prompt = input(str(chat.__name__) + ': ')
+#     output = PandasAI(llm).run(self.df, prompt)
     
-    return output
+#     return output
 
 # Normalize covariate dataset by ICV, TBV, or ICV + TBV
 def normalize_covariate_data(self, covariate_dataset, normalizing_factor: str):
