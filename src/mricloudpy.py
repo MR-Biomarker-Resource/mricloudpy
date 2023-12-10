@@ -58,9 +58,9 @@ class Data:
         Run statsmodels Logit regression on data object.
     """
 
-    LEVEL_FILE = "src\multilevel_lookup_table.txt"
+    _LEVEL_FILE = "src\multilevel_lookup_table.txt"
 
-    LEVEL_COLUMNS = ['Type1-L5 Statistics', 'Type1-L4 Statistics', 
+    _LEVEL_COLUMNS = ['Type1-L5 Statistics', 'Type1-L4 Statistics', 
                 'Type1-L3 Statistics', 'Type1-L2 Statistics',
                 'Type1-L1 Statistics', 'Type2-L5 Statistics',
                 'Type2-L4 Statistics', 'Type2-L3 Statistics',

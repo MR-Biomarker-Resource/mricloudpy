@@ -41,7 +41,7 @@ def _type1_l1_exception(self, f, df):
 
 # Read level lookup table into DataFrame
 def _read_lookup_table(self, col):
-    df = pd.read_csv(self.LEVEL_FILE, sep='\t', skiprows=1, index_col=False, 
+    df = pd.read_csv(self._LEVEL_FILE, sep='\t', skiprows=1, index_col=False, 
         header=None, usecols=range(1, 11), names=col)
 
     return df
@@ -243,27 +243,27 @@ def _append_region_cols(self, df: pd.DataFrame):
 def _append_hierarchy_cols(self, df: pd.DataFrame, base_level: int):
     # Populate necessary columns based on base level
     if (base_level == 5):
-        self._level5_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
-        self._level4_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
-        self._level3_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
-        self._level2_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
+        self._level5_lookup(df, self._read_lookup_table(self._LEVEL_COLUMNS))
+        self._level4_lookup(df, self._read_lookup_table(self._LEVEL_COLUMNS))
+        self._level3_lookup(df, self._read_lookup_table(self._LEVEL_COLUMNS))
+        self._level2_lookup(df, self._read_lookup_table(self._LEVEL_COLUMNS))
         self._level1_lookup(df)
         df['ICV'] = "ICV"
     elif (base_level == 4):
-        self._level4_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
-        self._level3_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
-        self._level2_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
+        self._level4_lookup(df, self._read_lookup_table(self._LEVEL_COLUMNS))
+        self._level3_lookup(df, self._read_lookup_table(self._LEVEL_COLUMNS))
+        self._level2_lookup(df, self._read_lookup_table(self._LEVEL_COLUMNS))
         self._level1_lookup(df)
         df['ICV'] = "ICV"
         return
     elif (base_level == 3):
-        self._level3_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
-        self._level2_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
+        self._level3_lookup(df, self._read_lookup_table(self._LEVEL_COLUMNS))
+        self._level2_lookup(df, self._read_lookup_table(self._LEVEL_COLUMNS))
         self._level1_lookup(df)
         df['ICV'] = "ICV"
         return
     elif (base_level == 2):
-        self._level2_lookup(df, self._read_lookup_table(self.LEVEL_COLUMNS))
+        self._level2_lookup(df, self._read_lookup_table(self._LEVEL_COLUMNS))
         self._level1_lookup(df)
         df['ICV'] = "ICV"
         return

@@ -5,9 +5,9 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from scipy import ndimage
 
-LEVEL_FILE = "src\multilevel_lookup_table.txt"
+_LEVEL_FILE = "src\multilevel_lookup_table.txt"
 
-LEVEL_COLUMNS = ['Type1-L5 Statistics', 'Type1-L4 Statistics', 
+_LEVEL_COLUMNS = ['Type1-L5 Statistics', 'Type1-L4 Statistics', 
                 'Type1-L3 Statistics', 'Type1-L2 Statistics',
                 'Type1-L1 Statistics', 'Type2-L5 Statistics',
                 'Type2-L4 Statistics', 'Type2-L3 Statistics',
@@ -15,12 +15,10 @@ LEVEL_COLUMNS = ['Type1-L5 Statistics', 'Type1-L4 Statistics',
 
 IMG_PATH = 'template\JHU_MNI_SS_T1_283Labels_M2.img'
 HDR_PATH = 'template\JHU_MNI_SS_T1_283Labels_M2.hdr'
-
 TEMPLATE_PATH = 'mni_template_data\JHU_MNI_SS_T1.nii.gz'
-# TEMPLATE_PATH = 'mni_template_data\mni_icbm152_t1_tal_nlin_sym_09c.nii'
 
 def imaging_read_lookup(col):
-    df = pd.read_csv(LEVEL_FILE, sep='\t', skiprows=1, index_col=False, 
+    df = pd.read_csv(_LEVEL_FILE, sep='\t', skiprows=1, index_col=False, 
         header=None, usecols=range(1, 11), names=col)
 
     return df
@@ -57,7 +55,7 @@ def generate_3d_image(img_path: str, regions: list, view: int, nrows: int,
     # 2 = coronal
 
     # Create lookup dictionary
-    lookup_dict = create_lookup_dict(LEVEL_COLUMNS)
+    lookup_dict = create_lookup_dict(_LEVEL_COLUMNS)
 
     # Import image data
     img_data = img.get_fdata()
