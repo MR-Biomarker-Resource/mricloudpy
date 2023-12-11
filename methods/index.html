@@ -129,6 +129,7 @@
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
       <li class="breadcrumb-item active">Methods</li>
     <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/MR-Biomarker-Resource/mricloudpy/edit/master/docs/methods.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -307,6 +308,7 @@
 </ul>
 <hr />
 <h2 id="imaging">Imaging</h2>
+<p>Generates a subplot or single image (if 'nrows' and 'ncols' is 1) of region-specific brain images on a template brain</p>
 <h3 id="generate_3d_image">generate_3d_image</h3>
 <pre><code class="language-python">generate_3d_image(img_path, regions, view, nrows, ncols, slice_n=0)
 </code></pre>
@@ -314,9 +316,9 @@
 <ul>
 <li><strong>img_path</strong>: <em>str</em></li>
 <li><strong>regions</strong>: <em>list</em></li>
-<li><strong>view</strong>: <em>int</em></li>
-<li><strong>nrows</strong>: <em>int</em></li>
-<li><strong>ncols</strong>: <em>int</em></li>
+<li><strong>view</strong>: <em>int, {0 (horizontal), 1 (sagittal), 2 (coronal)}</em></li>
+<li><strong>nrows</strong>: <em>int, {1, 2, 3, 4, 5, 6, 7}</em></li>
+<li><strong>ncols</strong>: <em>int, {1, 2, 3, 4, 5, 6, 7}</em></li>
 <li><strong>slice_n</strong>: <em>int, default = 0</em></li>
 </ul>
               
@@ -345,6 +347,10 @@
 
   <div class="rst-versions" role="note" aria-label="Versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/MR-Biomarker-Resource/mricloudpy" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
     
     
       <span><a href="../user_guide/" style="color: #fcfcfc">&laquo; Previous</a></span>
