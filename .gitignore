@@ -1,5 +1,6 @@
 pandasai.log
 cache
+site/
 __pycache__
 template
 mni_template_data/*
