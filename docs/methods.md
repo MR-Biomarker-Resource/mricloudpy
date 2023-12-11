@@ -249,6 +249,8 @@ Logit(covariate_dataset, covariates, outcome, log=False, roc_plot=False)
 
 ## Imaging
 
+Generates a subplot or single image (if 'nrows' and 'ncols' is 1) of region-specific brain images on a template brain
+
 ### generate_3d_image
 
 ```python
@@ -259,7 +261,7 @@ generate_3d_image(img_path, regions, view, nrows, ncols, slice_n=0)
 
 - **img_path**: *str*
 - **regions**: *list*
-- **view**: *int*
-- **nrows**: *int*
-- **ncols**: *int*
+- **view**: *int, {0 (horizontal), 1 (sagittal), 2 (coronal)}*
+- **nrows**: *int, {1, 2, 3, 4, 5, 6, 7}*
+- **ncols**: *int, {1, 2, 3, 4, 5, 6, 7}*
 - **slice_n**: *int, default = 0*

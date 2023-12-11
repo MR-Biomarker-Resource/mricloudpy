@@ -373,11 +373,6 @@ def append_covariate_data(self, file: str, icv: bool = False, tbv: bool = False)
     df_covariate.rename(columns={df_covariate.columns[0]: 'ID'}, inplace=True)
     df_covariate['ID'] = df_covariate['ID'].astype(str)
 
-    # DATA TESTING (DELETE LINE LATER)
-    df_covariate.loc[:14, 'ID'] = ['Kermit', 'Miss Piggy', 'Fozzie', 'Gonzo',
-                                    'Rowlf', 'Scooter', 'Animal', 'Pepe', 'Rizzo', 'Beaker', 
-                                    'Statler', 'Waldorf', 'Swedish Chef', 'Bob', 'Sally']
-
     # Merge Dataframes along ID column
     df = pd.merge(df_covariate, df_original, on='ID')
 

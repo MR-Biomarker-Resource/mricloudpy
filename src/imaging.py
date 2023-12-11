@@ -17,12 +17,14 @@ IMG_PATH = 'template\JHU_MNI_SS_T1_283Labels_M2.img'
 HDR_PATH = 'template\JHU_MNI_SS_T1_283Labels_M2.hdr'
 TEMPLATE_PATH = 'mni_template_data\JHU_MNI_SS_T1.nii.gz'
 
+# Read multilevel lookup table as DataFrame
 def imaging_read_lookup(col):
     df = pd.read_csv(_LEVEL_FILE, sep='\t', skiprows=1, index_col=False, 
         header=None, usecols=range(1, 11), names=col)
 
     return df
 
+# Creates a dictionary of the multilevel lookup table (index: region)
 def create_lookup_dict(col):
     lookup_dict = imaging_read_lookup(col).iloc[:, 0]
     lookup_dict.index += 1
@@ -31,6 +33,7 @@ def create_lookup_dict(col):
 
     return lookup_dict
 
+# Removes surrounding skull image
 def remove_skull(slice_intensity: list):
     excluded = [249, 250, 251]
     for i in range(len(slice_intensity)):
@@ -46,6 +49,15 @@ def generate_3d_image(img_path: str, regions: list, view: int, nrows: int,
     HORIZONTAL_TITLE = generate_3d_image.__name__ + ': Horizontal View'
     COLOR_SCALE = [[0, 'black'], [0.5 ,'red'], [1, 'white']]
 
+    # Valid input checks
+    if 0 >= view >= 2:
+        print(generate_3d_image.__name__ + ': Invalid view (must be 0, 1, 2)')
+        return
+    if 1 >= nrows >= 7 or 1 >= ncols >= 7:
+        print(generate_3d_image.__name__ + ': Invalid nrows or ncols (must be between 1 and 7, inclusive)')
+        return
+
+    # Load in user image and background template file with nibabel
     img = nib.load(img_path)
     template = nib.load(TEMPLATE_PATH)
 

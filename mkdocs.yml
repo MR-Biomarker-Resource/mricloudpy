@@ -1,4 +1,5 @@
 site_name: MRICloudPy
+repo_url: https://github.com/MR-Biomarker-Resource/mricloudpy
 nav:
     - Home: index.md
     - Getting Started: getting_started.md

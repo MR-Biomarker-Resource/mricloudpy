@@ -157,30 +157,31 @@ class Data:
     def long_to_wide(self):
         return access.long_to_wide(self)
 
-    def chat(self, key):
-        return access.chat(self, key)
+    # def chat(self, key):
+    #     return access.chat(self, key)
 
     # Get hierarchy path for 'part-of-whole' figure function according to base level
     def _get_hierarchy_path(self, base_level):
         return visuals._get_hierarchy_path(self, base_level)
 
-    # Generate Plotly Express sunburst model from DataFrame
+    # Generate Plotly Express sunburst Figure from DataFrame
     def generate_sunburst(self, type: int, id: str, base_level: str = 5):
         return visuals.generate_sunburst(self, type, id, base_level)
 
-    # Generate Plotly Express treemap model from DataFrame
+    # Generate Plotly Express treemap Figure from DataFrame
     def generate_treemap(self, type: int, id: str, base_level: str = 5):
         return visuals.generate_treemap(self, type, id, base_level)
 
-    # Generate Plotly Express icicle model from DataFrame
+    # Generate Plotly Express icicle Figure from DataFrame
     def generate_icicle(self, type: int, id: str, base_level: str = 5):
         return visuals.generate_icicle(self, type, id, base_level)
 
-    # Generate Plotly Express bar graph from DataFrame
+    # Generate Plotly Express bar graph Figure from DataFrame
     def generate_bar(self, type: int, level: int, id: list = None, 
             x: str = 'ID', y: str = 'Prop', log_y: bool = False):
         return visuals.generate_bar(self, type, level, id, x, y, log_y)
-     
+    
+    # Return mean difference data for figure
     def _get_mean_diff(self, df):
         return visuals._get_mean_diff(self, df)
 
