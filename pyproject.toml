@@ -26,3 +26,4 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/MR-Biomarker-Resource/mricloudpy"
+Documentation = "https://mr-biomarker-resource.github.io/mricloudpy/"
