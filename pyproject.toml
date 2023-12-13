@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mricloudpy"
+version = "0.0.1"
+description = "A package for handling MRICloud output data"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "pandas",
+    "numpy",
+    "nibabel",
+    "plotly",
+    "plotly_express",
+    "statsmodels",
+    "scikit-learn",
+    "scipy"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/MR-Biomarker-Resource/mricloudpy"

@@ -65,6 +65,3 @@ def Logit(self, covariate_dataset, covariates: list, outcome: str, log: bool = F
         fig.show()
 
     return result.summary(), fig
-
-if __name__ == '__main__':
-    print(__name__)

@@ -1,9 +1,5 @@
 import pandas as pd
-import read
-import access
-import visuals
-import analysis
-import imaging
+from mricloudpy import read, access, visuals, analysis, imaging
 
 class Data:
     """
@@ -58,7 +54,7 @@ class Data:
         Run statsmodels Logit regression on data object.
     """
 
-    _LEVEL_FILE = "src\multilevel_lookup_table.txt"
+    _LEVEL_FILE = "src\mricloudpy\\resources\multilevel_lookup_table.txt"
 
     _LEVEL_COLUMNS = ['Type1-L5 Statistics', 'Type1-L4 Statistics', 
                 'Type1-L3 Statistics', 'Type1-L2 Statistics',

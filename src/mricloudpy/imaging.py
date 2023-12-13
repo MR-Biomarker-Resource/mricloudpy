@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from scipy import ndimage
 
-_LEVEL_FILE = "src\multilevel_lookup_table.txt"
+_LEVEL_FILE = "src\mricloudpy\\resources\multilevel_lookup_table.txt"
 
 _LEVEL_COLUMNS = ['Type1-L5 Statistics', 'Type1-L4 Statistics', 
                 'Type1-L3 Statistics', 'Type1-L2 Statistics',
@@ -13,20 +13,20 @@ _LEVEL_COLUMNS = ['Type1-L5 Statistics', 'Type1-L4 Statistics',
                 'Type2-L4 Statistics', 'Type2-L3 Statistics',
                 'Type2-L2 Statistics', 'Type2-L1 Statistics']
 
-IMG_PATH = 'template\JHU_MNI_SS_T1_283Labels_M2.img'
-HDR_PATH = 'template\JHU_MNI_SS_T1_283Labels_M2.hdr'
-TEMPLATE_PATH = 'mni_template_data\JHU_MNI_SS_T1.nii.gz'
+_TEMPLATE_PATH = 'src\mricloudpy\\resources\JHU_MNI_SS_T1.nii.gz'
+
+_COLOR_SCALE = [[0, 'rgba(0,0,0,0)'], [0.01, 'rgb(128, 0, 32)'], [1, 'red']]
 
 # Read multilevel lookup table as DataFrame
-def imaging_read_lookup(col):
+def _imaging_read_lookup(col):
     df = pd.read_csv(_LEVEL_FILE, sep='\t', skiprows=1, index_col=False, 
         header=None, usecols=range(1, 11), names=col)
 
     return df
 
 # Creates a dictionary of the multilevel lookup table (index: region)
-def create_lookup_dict(col):
-    lookup_dict = imaging_read_lookup(col).iloc[:, 0]
+def _create_lookup_dict(col):
+    lookup_dict = _imaging_read_lookup(col).iloc[:, 0]
     lookup_dict.index += 1
     lookup_dict = lookup_dict.to_dict()
     lookup_dict[0] = 'NA'
@@ -34,7 +34,7 @@ def create_lookup_dict(col):
     return lookup_dict
 
 # Removes surrounding skull image
-def remove_skull(slice_intensity: list):
+def _remove_skull(slice_intensity: list):
     excluded = [249, 250, 251]
     for i in range(len(slice_intensity)):
         mask = np.isin(slice_intensity[i], excluded)
@@ -44,10 +44,9 @@ def remove_skull(slice_intensity: list):
 def generate_3d_image(img_path: str, regions: list, view: int, nrows: int, 
                       ncols: int, slice_n: int = 0):
 
-    SAGITTAL_TITLE = generate_3d_image.__name__ + ': Sagittal View'
-    CORONAL_TITLE = generate_3d_image.__name__ + ': Coronal View'
-    HORIZONTAL_TITLE = generate_3d_image.__name__ + ': Horizontal View'
-    COLOR_SCALE = [[0, 'black'], [0.5 ,'red'], [1, 'white']]
+    # SAGITTAL_TITLE = generate_3d_image.__name__ + ': Sagittal View'
+    # CORONAL_TITLE = generate_3d_image.__name__ + ': Coronal View'
+    # HORIZONTAL_TITLE = generate_3d_image.__name__ + ': Horizontal View'
 
     # Valid input checks
     if 0 >= view >= 2:
@@ -59,7 +58,7 @@ def generate_3d_image(img_path: str, regions: list, view: int, nrows: int,
 
     # Load in user image and background template file with nibabel
     img = nib.load(img_path)
-    template = nib.load(TEMPLATE_PATH)
+    template = nib.load(_TEMPLATE_PATH)
 
     # 'view' dictionary
     # 0 = horizontal/axial
@@ -67,7 +66,7 @@ def generate_3d_image(img_path: str, regions: list, view: int, nrows: int,
     # 2 = coronal
 
     # Create lookup dictionary
-    lookup_dict = create_lookup_dict(_LEVEL_COLUMNS)
+    lookup_dict = _create_lookup_dict(_LEVEL_COLUMNS)
 
     # Import image data
     img_data = img.get_fdata()
@@ -76,13 +75,13 @@ def generate_3d_image(img_path: str, regions: list, view: int, nrows: int,
 
     # Clean and organize image data
     slice_sagittal_intensity = [img_data[i, :, :] for i in range(0, img_data.shape[0])]
-    slice_sagittal_intensity = remove_skull(slice_sagittal_intensity)
+    slice_sagittal_intensity = _remove_skull(slice_sagittal_intensity)
 
     slice_coronal_intensity = [img_data[:, i, :] for i in range(0, img_data.shape[1])]
-    slice_coronal_intensity = remove_skull(slice_coronal_intensity)
+    slice_coronal_intensity = _remove_skull(slice_coronal_intensity)
 
     slice_horizontal_intensity = [img_data[:, :, i] for i in range(0, img_data.shape[2])]
-    slice_horizontal_intensity = remove_skull(slice_horizontal_intensity)
+    slice_horizontal_intensity = _remove_skull(slice_horizontal_intensity)
 
     # Convert region names to region IDs
     regions_id = [i for i,j in lookup_dict.items() if j in regions]
@@ -107,7 +106,7 @@ def generate_3d_image(img_path: str, regions: list, view: int, nrows: int,
                                     colorscale='Gray',
                                     showscale=False))
             fig.add_trace(go.Heatmap(z=regions_horizontal[slice_n,:,:].T, 
-                                    colorscale=[[0, 'rgba(0,0,0,0)'], [0.01, 'rgb(128, 0, 32)'], [1, 'red']],
+                                    colorscale=_COLOR_SCALE,
                                     showscale=False,
                                     x0=10,
                                     y0=5, 
@@ -123,7 +122,7 @@ def generate_3d_image(img_path: str, regions: list, view: int, nrows: int,
                                     colorscale='Gray',
                                     showscale=False))
             fig.add_trace(go.Heatmap(z=regions_sagittal[slice_n,:,:].T, 
-                                    colorscale=[[0, 'rgba(0,0,0,0)'], [0.01, 'rgb(128, 0, 32)'], [1, 'red']],
+                                    colorscale=_COLOR_SCALE,
                                     showscale=False,
                                     x0=10,
                                     y0=5, 
@@ -139,7 +138,7 @@ def generate_3d_image(img_path: str, regions: list, view: int, nrows: int,
                                     colorscale='Gray',
                                     showscale=False))
             fig.add_trace(go.Heatmap(z=regions_coronal[slice_n,:,:].T, 
-                                    colorscale=[[0, 'rgba(0,0,0,0)'], [0.01, 'rgb(128, 0, 32)'], [1, 'red']],
+                                    colorscale=_COLOR_SCALE,
                                     showscale=False,
                                     x0=10,
                                     y0=5, 
@@ -194,7 +193,7 @@ def generate_3d_image(img_path: str, regions: list, view: int, nrows: int,
                                         row=i,
                                         col=j)
                 fig.add_trace(go.Heatmap(z=regions_horizontal[cumsum_result[current_total_index],:,:].T, 
-                                        colorscale=[[0, 'rgba(0,0,0,0)'], [0.01, 'rgb(128, 0, 32)'], [1, 'red']],
+                                        colorscale=_COLOR_SCALE,
                                         showscale=False,
                                         x0=10,
                                         y0=5, 
@@ -214,7 +213,7 @@ def generate_3d_image(img_path: str, regions: list, view: int, nrows: int,
                                         row=i,
                                         col=j)
                 fig.add_trace(go.Heatmap(z=regions_sagittal[cumsum_result[current_total_index],:,:].T, 
-                                        colorscale=[[0, 'rgba(0,0,0,0)'], [0.01, 'rgb(128, 0, 32)'], [1, 'red']],
+                                        colorscale=_COLOR_SCALE,
                                         showscale=False,
                                         x0=10,
                                         y0=5, 
@@ -234,7 +233,7 @@ def generate_3d_image(img_path: str, regions: list, view: int, nrows: int,
                                         row=i,
                                         col=j)
                 fig.add_trace(go.Heatmap(z=regions_coronal[cumsum_result[current_total_index],:,:].T, 
-                                        colorscale=[[0, 'rgba(0,0,0,0)'], [0.01, 'rgb(128, 0, 32)'], [1, 'red']],
+                                        colorscale=_COLOR_SCALE,
                                         showscale=False,
                                         x0=10,
                                         y0=5, 
@@ -255,5 +254,5 @@ def generate_3d_image(img_path: str, regions: list, view: int, nrows: int,
     fig.show()
     return fig
 
-if __name__ == '__main__':
-    print(__name__)
+# if __name__ == '__main__':
+#     print(__name__)

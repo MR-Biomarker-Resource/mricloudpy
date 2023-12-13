@@ -384,6 +384,3 @@ def append_covariate_data(self, file: str, icv: bool = False, tbv: bool = False)
         tbv_cols = [col for col in df_original if col.endswith('_Type1.0_L1.0') and col != 'CSF_Type1.0_L1.0']
         df['TBV'] = df[tbv_cols].sum(axis=1)
     return df
-
-if __name__ == '__main__':
-    print(__name__)

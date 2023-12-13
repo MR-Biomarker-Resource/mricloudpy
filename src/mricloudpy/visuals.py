@@ -315,6 +315,3 @@ def generate_corr_matrix(self, type: int, level: int, id: list = None):
     print(str(self.generate_corr_matrix.__name__) + ": Generation successful")
     figlevel.show()
     return figlevel
-
-if __name__ == '__main__':
-    print(__name__)

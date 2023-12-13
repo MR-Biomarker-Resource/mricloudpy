@@ -1,8 +1,7 @@
 pandasai.log
 cache
-site/
+site
 __pycache__
 template
-mni_template_data/*
-!mni_template_data/JHU_MNI_SS_T1.nii.gz
-unrestricted_bcaffo_12_12_2017_12_17_8.csv.csv
+venv
+mricloudpy.egg-info

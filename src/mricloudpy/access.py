@@ -71,6 +71,3 @@ def normalize_covariate_data(self, covariate_dataset, normalizing_factor: str):
         df[normalized_cols] = df[normalized_cols].div(df['TBV'], axis=0)
 
     return df
-
-if __name__ == '__main__':
-    print(__name__)

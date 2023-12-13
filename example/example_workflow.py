@@ -1,5 +1,5 @@
 import mricloudpy as mp
-from imaging import generate_3d_image
+# from imaging import generate_3d_image
 
 SUBJECTS = ['Kermit', 'Miss Piggy', 'Fozzie', 'Gonzo',
 'Rowlf', 'Scooter', 'Animal', 'Pepe', 'Rizzo', 'Beaker', 
