@@ -47,6 +47,10 @@
                 <li class="toctree-l1 current"><a class="reference internal current" href="./">Getting Started</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#running-web-app-gui">Running web app GUI</a>
+    </li>
+        </ul>
     </li>
     </ul>
                 </li>
@@ -90,8 +94,17 @@
                 <h1 id="getting-started-with-mricloudpy">Getting Started with MRICloudPy</h1>
 <hr />
 <h2 id="installation">Installation</h2>
-<p>To install MRICloudPy, run the following command:</p>
+<p>Use the package manager <a href="https://pip.pypa.io/en/stable/">pip</a> to install <code>mricloudpy</code>.</p>
 <pre><code class="language-bash">pip install mricloudpy
+</code></pre>
+<p>Alternatively, clone this repository and install the package locally.</p>
+<h3 id="running-web-app-gui">Running web app GUI</h3>
+<p>To use the web app GUI, clone this repository and install <code>panel</code> and <code>jupyter</code> as well:</p>
+<pre><code class="language-bash">pip install panel jupyter
+</code></pre>
+<p>Then start the Bokeh server on your local machine:</p>
+<pre><code class="language-bash">cd ./app
+panel serve app.py
 </code></pre>
               
             </div>
