@@ -328,16 +328,16 @@ def _get_type_labels(self, file):
     return df
 
 # Combines DataFrames from a list of files
-def import_data(self, path: str, id_type: str = 'numeric', id_list: list = None):
+def _import_data(self, path: str, id_type: str = 'numeric', id_list: list = None):
     files = self._get_files(path)
     files_found = files.copy()
     files_found = [x.replace(path + '/', '') for x in files_found]
-    print(str(self.import_data.__name__) + ": Data files found")
+    print(str(self._import_data.__name__) + ": Data files found")
 
     for i in files_found:
         print(i)
 
-    print(str(self.import_data.__name__) + ": Importing...")
+    print(str(self._import_data.__name__) + ": Importing...")
     df = pd.DataFrame()
     # Iterate over list of files, read in files, and concatenate into a DataFrame
     for f in files:
@@ -345,7 +345,7 @@ def import_data(self, path: str, id_type: str = 'numeric', id_list: list = None)
         # Populate ID column based on id_type (custom, filename, numeric)
         if (id_type == 'custom'):
             if (id_list is None):
-                print(str(self.import_data.__name__) + ": id_type \'custom\' requires id_list")
+                print(str(self._import_data.__name__) + ": id_type \'custom\' requires id_list")
                 return
             df2['ID'] = str(id_list[files.index(f)])
         elif (id_type == 'filename'):
@@ -354,21 +354,21 @@ def import_data(self, path: str, id_type: str = 'numeric', id_list: list = None)
             df2['ID'] = str(files.index(f))
         else:
             # Invalid ID error
-            print(str(self.import_data.__name__) + ": Invalid id_type: " 
+            print(str(self._import_data.__name__) + ": Invalid id_type: " 
                 + "\'" + str(id_type) + "\'" + ", valid id_type(s) include: numeric, filename, custom")
             return
         df = pd.concat([df, df2], ignore_index=True)
 
-    print(str(self.import_data.__name__) + ": Import successful")
+    print(str(self._import_data.__name__) + ": Import successful")
     return df 
 
-def append_covariate_data(self, file: str, icv: bool = False, tbv: bool = False):
+def append_covariate_data(self, path: str, icv: bool = False, tbv: bool = False):
 
     # Access data from data object
     df_original = self.long_to_wide()
 
     # Create DataFrame of covariate data
-    df_covariate = pd.read_csv(file)
+    df_covariate = pd.read_csv(path)
     # Rename first column to 'ID' to match data and set as object
     df_covariate.rename(columns={df_covariate.columns[0]: 'ID'}, inplace=True)
     df_covariate['ID'] = df_covariate['ID'].astype(str)

@@ -11,17 +11,15 @@ class Data:
     ----------
     path : str
         Path to MRICloud data text file
-    id_type : str
+    id_type : str, {'numeric', 'filename', 'custom'}, default = 'numeric'
         Type of subject ID formatting
-    id_list : list
+    id_list : list, default = None
         List of custom subject IDs
     df : DataFrame
         DataFrame generated from path
 
     Methods
     -------
-    import_data(path, id_type='numeric', id_list=None)
-        Concatenate DataFrames from a list of MRICloud data files.
     rename_subject(old, new)
         Rename a specific subject ID.
     get_data()
@@ -39,12 +37,12 @@ class Data:
     generate_icicle(type, id, base_level=5)
         Generate a Plotly Express icicle Figure model.
     generate_bar(type, level, id=None, x='ID', y='Prop', log_y=False)
-        Generates a Plotly Express bar graph Figure.
+        Generate a Plotly Express bar graph Figure.
     generate_mean_diff(type, level, color='ID', id=None)
         Generate a Plotly Express mean difference plot Figure.
     generate_corr_matrix(type, level, id=None)
         Generate a Plotly Express heatmap Figure of a correlation matrix.
-    append_covariate_data(file, icv=False, tbv=False)
+    append_covariate_data(path, icv=False, tbv=False)
         Append covariate dataset to data object.
     normalize_covariate_data(covariate_dataset, normalizing_factor)
         Normalize covariate data in data object by ICV, TBV, or ICV + TBV.
@@ -62,11 +60,25 @@ class Data:
                 'Type2-L4 Statistics', 'Type2-L3 Statistics',
                 'Type2-L2 Statistics', 'Type2-L1 Statistics']
 
-    def __init__(self, path: str, id_type: str = 'numeric', id_list: list = None): 
+    def __init__(self, path: str, id_type: str = 'numeric', id_list: list = None):
+        """
+        Constructs data object.
+
+        Parameters
+        ----------
+            path : str
+                Path to MRICloud data text file
+            id_type : str
+                Type of subject ID formatting
+            id_list : list
+                List of custom subject IDs
+            df : DataFrame
+                DataFrame generated from path
+        """ 
         self.path = path
         self.id_type = id_type
         self.id_list = id_list
-        self.df = self.import_data(path, id_type, id_list)
+        self.df = self._import_data(path, id_type, id_list)
         return
 
     # Retrieves list of text files from directory
@@ -134,23 +146,66 @@ class Data:
         return read._get_type_labels(self, file)
 
     # Combines DataFrames from a list of files
-    def import_data(self, path: str, id_type: str = 'numeric', id_list: list = None):
-        return read.import_data(self, path, id_type, id_list)
+    def _import_data(self, path: str, id_type: str = 'numeric', id_list: list = None):
+        return read._import_data(self, path, id_type, id_list)
 
-    # Renames specific subject ID
     def rename_subject(self, old: str, new: str):
+        """
+        Rename a specific subject ID.
+
+        Parameters
+        ----------
+        old : str
+            Old subject name to be replaced
+        new : str
+            New subject name
+
+        Returns
+        -------
+        DataFrame
+        """
         return access.rename_subject(self, old, new)
 
-    # Returns DataFrame representing data object
     def get_data(self):
+        """
+        Retrieve DataFrame of a given data object.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        DataFrame
+        """
         return access.get_data(self)
 
-    # Return list of all unique IDs in a DataFrame
     def get_id(self):
+        """
+        Retrieve list of unique subject IDs.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        Series
+        """
         return access.get_id(self)
     
-    # Converts DataFrame from long to wide form
     def long_to_wide(self):
+        """
+        Convert default long form data to a wide format.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        DataFrame
+        """
         return access.long_to_wide(self)
 
     # def chat(self, key):
@@ -160,53 +215,221 @@ class Data:
     def _get_hierarchy_path(self, base_level):
         return visuals._get_hierarchy_path(self, base_level)
 
-    # Generate Plotly Express sunburst Figure from DataFrame
     def generate_sunburst(self, type: int, id: str, base_level: str = 5):
+        """
+        Generate a Plotly Express sunburst Figure model.
+
+        Parameters
+        ----------
+        type : int, {1, 2}
+            Type of hierarchical view
+        id : str
+            Subject ID
+        base_level : int, {1, 2, 3, 4, 5}, default = 5
+            Lowest hierarchical level to include
+
+        Returns
+        -------
+        plotly.graph_objects.Figure
+        """
         return visuals.generate_sunburst(self, type, id, base_level)
 
-    # Generate Plotly Express treemap Figure from DataFrame
     def generate_treemap(self, type: int, id: str, base_level: str = 5):
+        """
+        Generate a Plotly Express treemap Figure model.
+
+        Parameters
+        ----------
+        type : int, {1, 2}
+            Type of hierarchical view
+        id : str
+            Subject ID
+        base_level : int, {1, 2, 3, 4, 5}, default = 5
+            Lowest hierarchical level to include
+
+        Returns
+        -------
+        plotly.graph_objects.Figure
+        """
         return visuals.generate_treemap(self, type, id, base_level)
 
-    # Generate Plotly Express icicle Figure from DataFrame
     def generate_icicle(self, type: int, id: str, base_level: str = 5):
+        """
+        Generate a Plotly Express icicle Figure model.
+
+        Parameters
+        ----------
+        type : int, {1, 2}
+            Type of hierarchical view
+        id : str
+            Subject ID
+        base_level : int, {1, 2, 3, 4, 5}, default = 5
+            Lowest hierarchical level to include
+
+        Returns
+        -------
+        plotly.graph_objects.Figure
+        """
         return visuals.generate_icicle(self, type, id, base_level)
 
-    # Generate Plotly Express bar graph Figure from DataFrame
     def generate_bar(self, type: int, level: int, id: list = None, 
             x: str = 'ID', y: str = 'Prop', log_y: bool = False):
+        """
+        Generate a Plotly Express bar graph Figure.
+
+        Parameters
+        ----------
+        type : int, {1, 2}
+            Type of hierarchical view
+        level : int, {1, 2, 3, 4, 5}
+            Hierarchical level of interest
+        id : list, default = None
+            Subjects of interest
+        x : str, {'ID', 'Object'}, default = 'ID'
+            Independent variable
+        y : str, {'Prop', 'Volume'}, default = 'Prop'
+            Dependent variable
+        log_y : bool, default = False
+            Logarithm of dependent variable
+
+        Returns
+        -------
+        plotly.graph_objects.Figure
+        """
         return visuals.generate_bar(self, type, level, id, x, y, log_y)
     
     # Return mean difference data for figure
     def _get_mean_diff(self, df):
         return visuals._get_mean_diff(self, df)
 
-    # Generate mean difference between left and right hemispheres of brain
     def generate_mean_diff(self, type: int, level: int, color: str = 'ID', id: list = None):
+        """
+        Generate a Plotly Express mean difference plot Figure.
+
+        Parameters
+        ----------
+        type : int, {1, 2}
+            Type of hierarchical view
+        level : int, {1, 2, 3, 4, 5}
+            Hierarchical level of interest
+        color : str, {'ID', 'Object'}, default = 'ID'
+            Variable to organize data by color
+        id : list, default = None
+            Subjects of interest
+
+        Returns
+        -------
+        plotly.graph_objects.Figure
+        """
         return visuals.generate_mean_diff(self, type, level, color, id)
 
     # Transform DataFrame for correlation matrix
     def _corr_transform(self, df):
         return visuals._corr_transform(self, df)
 
-    # Generate correlation matrix Plotly heatmap
     def generate_corr_matrix(self, type: int, level: int, id: list = None):
+        """
+        Generate a Plotly Express heatmap Figure of a correlation matrix.
+
+        Parameters
+        ----------
+        type : int, {1, 2}
+            Type of hierarchical view
+        level : int, {1, 2, 3, 4, 5}
+            Hierarchical level of interest
+        id : list, default = None
+            Subjects of interest
+
+        Returns
+        -------
+        plotly.graph_objects.Figure
+        """
         return visuals.generate_corr_matrix(self, type, level, id)
     
-    # Append covariate data to subjects in dataset object
-    def append_covariate_data(self, file: str, icv: bool = False, tbv: bool = False):
-        return read.append_covariate_data(self, file, icv, tbv)
+    def append_covariate_data(self, path: str, icv: bool = False, tbv: bool = False):
+        """
+        Append covariate dataset to data object.
+
+        Parameters
+        ----------
+        path : str
+            Path to covariate dataset file
+        icv : bool, default = False
+            Append intracranial volume to covariate dataset
+        tbv : bool, default = False
+            Append total brain volume to covariate dataset
+
+        Returns
+        -------
+        DataFrame
+        """
+        return read.append_covariate_data(self, path, icv, tbv)
     
-    # Normalize region volumes by normalizing factor (ICV, TBV, ICV+TBV) in covariate dataset
     def normalize_covariate_data(self, covariate_dataset, normalizing_factor: str):
+        """
+        Normalize covariate data in data object by ICV, TBV, or ICV + TBV.
+
+        Parameters
+        ----------
+        covariate_dataset : DataFrame
+            Covariate dataset to be normalized
+        normalizing_factor : str, {'icv, tbv, icv_tbv'}
+            Variable to normalize region volumes by
+
+        Returns
+        -------
+        DataFrame
+        """
         return access.normalize_covariate_data(self, covariate_dataset, normalizing_factor)
     
-    # Run statsmodels Ordinary Least Squares regression on data object.
-    def OLS(self, covariate_dataset, covariates: list, outcome: str, log: bool = False, residual_plot: bool = False):
+    def OLS(self, covariate_dataset, covariates: list, outcome: str, log: bool = False, 
+            residual_plot: bool = False):
+        """
+        Run statsmodels Ordinary Least Squares regression on data object.
+
+        Parameters
+        ----------
+        covariate_dataset : DataFrame
+            Dataset containing the covariates and outcome
+        covariates : list
+            Covariates to include in analysis (x, independent covariates)
+        outcome : str
+            Outcome of interest (y, dependent covariate)
+        log : bool, default = False
+            Logaritm of covariates   
+        residual_plot : bool, default = False
+            Return a residual plot of analysis results as Plotly Figure
+
+        Returns
+        -------
+        statsmodels.regression.linear_model.RegressionResultsWrapper.summary()
+        plotly.graph_objects.Figure
+        """
         return analysis.OLS(self, covariate_dataset, covariates, outcome, log, residual_plot)
     
-    # Run statsmodels Logit regression on data object.
-    def Logit(self, covariate_dataset, covariates: list, outcome: str, log: bool = False, roc_plot: bool = False):
+    def Logit(self, covariate_dataset, covariates: list, outcome: str, log: bool = False, 
+              roc_plot: bool = False):
+        """
+        Run statsmodels Logit regression on data object.
+
+        Parameters
+        ----------
+        covariate_dataset : DataFrame
+            Dataset containing the covariates and outcome
+        covariates : list
+            Covariates to include in analysis (x, independent covariates)
+        outcome : str
+            Outcome of interest (y, dependent covariate)
+        log : bool, default = False
+            Logaritm of covariates   
+        roc_plot : bool, default = False
+            Return an ROC curve plot of analysis results as Plotly Figure
+
+        Returns
+        -------
+        RegressionResults.summary()
+        plotly.graph_objects.Figure
+        """
         return analysis.Logit(self, covariate_dataset, covariates, outcome, log, roc_plot)
     
     # def RandomForest(self, covariate_dataset, covariates: list, outcome: str):
