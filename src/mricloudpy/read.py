@@ -20,6 +20,7 @@ def _get_header(self, f):
 
     head = content[header_line].split('\t')
     head.pop()
+    file.close()
 
     return head
 
@@ -28,6 +29,7 @@ def _get_start_index(self, f):
     file = open(f)
     content = file.readlines()
     start_index = content.index('Type1-L1 Statistics\n')
+    file.close()
 
     return start_index
 

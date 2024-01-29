@@ -68,7 +68,7 @@ class Data:
         ----------
             path : str
                 Path to MRICloud data text file
-            id_type : str
+            id_type : str, {'numeric', 'filename', 'custom'}, default='numeric' 
                 Type of subject ID formatting
             id_list : list
                 List of custom subject IDs
