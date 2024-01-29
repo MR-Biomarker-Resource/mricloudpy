@@ -166,7 +166,7 @@ def add_covariate_data(event):
 def upload_covariate_data(event):
     upload_covariate_data.is_uploaded = False
     if add_covariate_data.file is not None:
-        add_covariate_data.covariate_data = upload.dataset.append_covariate_data(file=add_covariate_data_text.value,
+        add_covariate_data.covariate_data = upload.dataset.append_covariate_data(path=add_covariate_data_text.value,
                                                                                  icv=append_icv_checkbox.value,
                                                                                  tbv=append_tbv_checkbox)
         data.value = add_covariate_data.covariate_data.iloc[:, :min(20, add_covariate_data.covariate_data.shape[1])]

@@ -10,7 +10,7 @@ COVARIATE_DATA_PATH = 'sample_data_covariate\hcp_sample_clean.csv'
 IMG_PATH = 'template\JHU_MNI_SS_T1_283Labels_M2.img'
 
 dataset = mp.Data(path=DATA_PATH, id_type='custom', id_list=SUBJECTS)
-covariate_dataset = dataset.append_covariate_data(COVARIATE_DATA_PATH, icv=True, tbv=True)
+covariate_dataset = dataset.append_covariate_data(path=COVARIATE_DATA_PATH, icv=True, tbv=True)
 
 # print(generate_3d_image(img_path=IMG_PATH, regions=['CSF'], view=2, nrows=6, ncols=6, slice_n=100))
 covariate_dataset = dataset.normalize_covariate_data(covariate_dataset, normalizing_factor='none')
