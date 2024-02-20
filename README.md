@@ -17,7 +17,7 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install `mriclo
 pip install mricloudpy
 ```
 
-Alternatively, clone this repository and install the package locally.
+Alternatively, clone [this](https://mr-biomarker-resource.github.io/MRICloudPy/) repository and install the package locally.
 
 ### Running web app GUI
 
@@ -44,7 +44,7 @@ To contribute to `mricloudpy`, follow these steps:
 
 ### Step 1
 
-Fork this repository.
+Fork [this](https://mr-biomarker-resource.github.io/MRICloudPy/) repository.
 
 ### Step 2
 
