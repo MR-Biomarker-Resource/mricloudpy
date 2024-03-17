@@ -3,10 +3,13 @@ import numpy as np
 import plotly_express as px
 import plotly.graph_objects as go
 import statsmodels.api as sm
-from sklearn.metrics import roc_curve, roc_auc_score
+from sklearn.metrics import roc_curve, auc, roc_auc_score, mean_squared_error, RocCurveDisplay
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
 
 # Ordinary Least Squares (OLS) regression method
-def OLS(self, covariate_dataset, covariates: list, outcome: str, log: bool = False, residual_plot: bool = False):
+def OLS(self, covariate_dataset, covariates: list, outcome: str, log: bool = False, 
+        residual_plot: bool = False):
     # Copy the dataset
     df = covariate_dataset.copy()
 
@@ -39,7 +42,8 @@ def OLS(self, covariate_dataset, covariates: list, outcome: str, log: bool = Fal
     return result.summary(), fig
 
 # Logistic regression method
-def Logit(self, covariate_dataset, covariates: list, outcome: str, log: bool = False, roc_plot: bool = False):
+def Logit(self, covariate_dataset, covariates: list, outcome: str, log: bool = False, 
+          roc_plot: bool = False):
     # Copy the dataset
     df = covariate_dataset.copy()
 
@@ -78,3 +82,61 @@ def Logit(self, covariate_dataset, covariates: list, outcome: str, log: bool = F
 
     # Return the summary of the model and the figure
     return result.summary(), fig
+
+def RandomForest(self, covariate_dataset, covariates: list, outcome: str, log: bool = False,
+                 n_estimators: int = 200, random_state: int = 42, importance_plot: bool = False):
+    # Copy the dataset
+    df = covariate_dataset.copy()
+
+    # Filter out non-level 5 regions
+    filtered_cols = [col for col in df.columns if ('_Type' not in col) or ('1.0_L5.0' in col)]
+    df = df[filtered_cols]
+
+    # Define the outcome variable
+    y = df[outcome]
+
+    # Prepare covariates (if log)
+    if log:
+        X = np.log(df[covariates])
+    else:
+        X = df[covariates]
+
+    # Split the data into training and testing sets (80% train, 20% test)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, 
+                                                        random_state=random_state)
+
+    # Initialize the Random Forest classifier
+    rf_classifier = RandomForestClassifier(n_estimators=n_estimators, random_state=random_state)
+
+    # Fit model on training data
+    rf_classifier.fit(X_train, y_train)
+
+    # Make predictions on test data
+    y_pred = rf_classifier.predict(X_test)
+
+    # Calculate model accuracy
+    accuracy = rf_classifier.score(X_test, y_test)
+    print(f"Model accuracy: {accuracy:.2f}")
+
+    # Calculate MSE
+    mse = mean_squared_error(y_test, y_pred)
+    print(f"Mean Squared Error: {mse:.2f}")
+
+    # Model feature importance
+    feature_importances = rf_classifier.feature_importances_
+    print("Feature Importance:")
+    for feature, importance in zip(covariates, feature_importances):
+        print(f"\t{feature}: {importance:.4f}")
+
+    # If roc_plot is True, plot the ROC curve
+    if importance_plot:
+        # Feature importance plot
+        df_plot = pd.DataFrame({
+            'Features': covariates,
+            'Importance': feature_importances
+        }).sort_values('Importance')
+
+        fig = px.bar(df_plot, x='Importance', y='Features', orientation='h', title='Feature Importances')
+        fig.show()
+
+    return rf_classifier, y_pred, fig
