@@ -433,7 +433,8 @@ class Data:
         return analysis.Logit(self, covariate_dataset, covariates, outcome, log, roc_plot)
     
     def RandomForest(self, covariate_dataset, covariates: list, outcome: str, log: bool = False, 
-                     n_estimators: int = 200, random_state: int = 42, importance_plot: bool = False):
+                 classifier: bool = False, n_estimators: int = 200, random_state: int = 42, 
+                 importance_plot: bool = False):
         """
         Run statsmodels Random Forest classifier on data object.
 
@@ -447,6 +448,8 @@ class Data:
             Outcome of interest (y, dependent covariate)
         log : bool, default = False
             Logaritm of covariates
+        classifier : bool, defaults = False
+            Use RandomForestClassifier
         n_estimators : int, default = 200
             Number of decision trees
         random_state : int, default = 42
@@ -456,11 +459,11 @@ class Data:
 
         Returns
         -------
-        sklearn.ensemble.RandomForestClassifier
+        sklearn.ensemble.RandomForestRegressor (or sklearn.ensemble.RandomForestClassifier)
         numpy.ndarray
         plotly.graph_objects.Figure
         """
-        return analysis.RandomForest(self, covariate_dataset, covariates, outcome, log, 
+        return analysis.RandomForest(self, covariate_dataset, covariates, outcome, log, classifier,
                                      n_estimators, random_state, importance_plot)
 
 if __name__ == '__main__':

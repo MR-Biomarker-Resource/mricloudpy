@@ -5,7 +5,7 @@ import plotly.graph_objects as go
 import statsmodels.api as sm
 from sklearn.metrics import roc_curve, auc, roc_auc_score, mean_squared_error, RocCurveDisplay
 from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
 
 # Ordinary Least Squares (OLS) regression method
 def OLS(self, covariate_dataset, covariates: list, outcome: str, log: bool = False, 
@@ -83,8 +83,9 @@ def Logit(self, covariate_dataset, covariates: list, outcome: str, log: bool = F
     # Return the summary of the model and the figure
     return result.summary(), fig
 
-def RandomForest(self, covariate_dataset, covariates: list, outcome: str, log: bool = False,
-                 n_estimators: int = 200, random_state: int = 42, importance_plot: bool = False):
+def RandomForest(self, covariate_dataset, covariates: list, outcome: str, log: bool = False, 
+                 classifier: bool = False, n_estimators: int = 200, random_state: int = 42, 
+                 importance_plot: bool = False):
     # Copy the dataset
     df = covariate_dataset.copy()
 
@@ -105,30 +106,33 @@ def RandomForest(self, covariate_dataset, covariates: list, outcome: str, log: b
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, 
                                                         random_state=random_state)
 
-    # Initialize the Random Forest classifier
-    rf_classifier = RandomForestClassifier(n_estimators=n_estimators, random_state=random_state)
+    # Initialize the Random Forest
+    if classifier:
+        rf_regressor = RandomForestClassifier(n_estimators=n_estimators, random_state=random_state)
+    else:
+        rf_regressor = RandomForestRegressor(n_estimators=n_estimators, random_state=random_state)
 
     # Fit model on training data
-    rf_classifier.fit(X_train, y_train)
+    rf_regressor.fit(X_train, y_train)
 
     # Make predictions on test data
-    y_pred = rf_classifier.predict(X_test)
+    y_pred = rf_regressor.predict(X_test)
 
     # Calculate model accuracy
-    accuracy = rf_classifier.score(X_test, y_test)
+    accuracy = rf_regressor.score(X_test, y_test)
     print(f"Model accuracy: {accuracy:.2f}")
 
     # Calculate MSE
     mse = mean_squared_error(y_test, y_pred)
-    print(f"Mean Squared Error: {mse:.2f}")
+    print(f"MSE: {mse:.2f}")
 
     # Model feature importance
-    feature_importances = rf_classifier.feature_importances_
+    feature_importances = rf_regressor.feature_importances_
     print("Feature Importance:")
     for feature, importance in zip(covariates, feature_importances):
         print(f"\t{feature}: {importance:.4f}")
 
-    # If roc_plot is True, plot the ROC curve
+    # If importance_plot is True
     if importance_plot:
         # Feature importance plot
         df_plot = pd.DataFrame({
@@ -139,4 +143,4 @@ def RandomForest(self, covariate_dataset, covariates: list, outcome: str, log: b
         fig = px.bar(df_plot, x='Importance', y='Features', orientation='h', title='Feature Importances')
         fig.show()
 
-    return rf_classifier, y_pred, fig
+    return rf_regressor, y_pred, accuracy, mse, fig
