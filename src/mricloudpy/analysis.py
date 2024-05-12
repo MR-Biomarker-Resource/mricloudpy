@@ -108,18 +108,18 @@ def RandomForest(self, covariate_dataset, covariates: list, outcome: str, log: b
 
     # Initialize the Random Forest
     if classifier:
-        rf_regressor = RandomForestClassifier(n_estimators=n_estimators, random_state=random_state)
+        rf = RandomForestClassifier(n_estimators=n_estimators, random_state=random_state)
     else:
-        rf_regressor = RandomForestRegressor(n_estimators=n_estimators, random_state=random_state)
+        rf = RandomForestRegressor(n_estimators=n_estimators, random_state=random_state)
 
     # Fit model on training data
-    rf_regressor.fit(X_train, y_train)
+    rf.fit(X_train, y_train)
 
     # Make predictions on test data
-    y_pred = rf_regressor.predict(X_test)
+    y_pred = rf.predict(X_test)
 
     # Calculate model accuracy
-    accuracy = rf_regressor.score(X_test, y_test)
+    accuracy = rf.score(X_test, y_test)
     print(f"Model accuracy: {accuracy:.2f}")
 
     # Calculate MSE
@@ -127,7 +127,7 @@ def RandomForest(self, covariate_dataset, covariates: list, outcome: str, log: b
     print(f"MSE: {mse:.2f}")
 
     # Model feature importance
-    feature_importances = rf_regressor.feature_importances_
+    feature_importances = rf.feature_importances_
     print("Feature Importance:")
     for feature, importance in zip(covariates, feature_importances):
         print(f"\t{feature}: {importance:.4f}")
@@ -143,4 +143,4 @@ def RandomForest(self, covariate_dataset, covariates: list, outcome: str, log: b
         fig = px.bar(df_plot, x='Importance', y='Features', orientation='h', title='Feature Importances')
         fig.show()
 
-    return rf_regressor, y_pred, accuracy, mse, fig
+    return rf, y_pred, accuracy, mse, fig
